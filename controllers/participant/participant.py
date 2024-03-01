@@ -1,9 +1,22 @@
 """Braitenberg-based obstacle-avoiding robot controller."""
 
 from controller import Robot
+from controller import Compass
+
+import math
+
+def angulo_orientacao(bussola):
+    values = bussola.getValues()
+    # Orientacao relativamente ao norte em radianos
+    radianos = math.atan2(values[1],values[0])
+    return radianos
 
 # Get reference to the robot.
 robot = Robot()
+compass = robot.getDevice("compass")
+# Get simulation step length.
+timeStep = int(robot.getBasicTimeStep())
+compass.enable(timeStep)
 
 # Get simulation step length.
 timeStep = int(robot.getBasicTimeStep())
@@ -48,7 +61,11 @@ while robot.step(timeStep) != -1:
     centralSensorValue = centralSensor.getValue() / distanceSensorCalibrationConstant
     centralRightSensorValue = centralRightSensor.getValue() / distanceSensorCalibrationConstant
     outerRightSensorValue = outerRightSensor.getValue() / distanceSensorCalibrationConstant
-
+    desvio = angulo_orientacao(compass)
+    # Descomentar linha a seguir para ver o valor do desvio
+    #print ("Angulo desvio: " + str(desvio*180.0/math.pi))
+    if abs(desvio*180.0/math.pi)<2.0:
+        desvio = 0.0
     # Set wheel velocities based on sensor values, prefer right turns if the central sensor is triggered.
     leftMotor.setVelocity(initialVelocity - (centralRightSensorValue + outerRightSensorValue) / 2)
-    rightMotor.setVelocity(initialVelocity - (centralLeftSensorValue + outerLeftSensorValue) / 2 - centralSensorValue)
+    rightMotor.setVelocity(initialVelocity - (centralLeftSensorValue + outerLeftSensorValue) / 2 - centralSensorValue + desvio)

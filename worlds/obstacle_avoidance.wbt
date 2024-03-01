@@ -57,7 +57,7 @@ SpotLight {
 DEF THYMIO2 Thymio2 {
   translation 0 -2.68 0
   rotation 0 0 -1 -1.570795
-  controller "avoid_obstacles"
+  controller "participant"
   controllerArgs []
   synchronization FALSE
   bodySlot [
