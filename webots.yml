@@ -1,0 +1,8 @@
+publish: true
+type: competition
+world:
+  file: worlds/obstacle_avoidance.wbt
+  max-duration: 80
+  metric: time
+  higher-is-better: true
+dockerCompose: competition:webots-project/controllers/participant/
